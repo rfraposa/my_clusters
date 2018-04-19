@@ -1,0 +1,2 @@
+cluster.name: production
+node.name: production1

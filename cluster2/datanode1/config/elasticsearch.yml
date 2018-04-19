@@ -1,0 +1,2 @@
+cluster.name: data_cluster
+node.name: datanode1
