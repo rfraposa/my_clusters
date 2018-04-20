@@ -9,7 +9,7 @@ rm -rf /home/elastic/.ssh/known_hosts
 # but Kibana instances must have "kibana" in the folder name
 
 repo="elasticcertification/repo"
-username="ubuntu"
+username="elastic"
 
 for dir in */  
 do
