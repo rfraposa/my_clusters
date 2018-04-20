@@ -39,6 +39,7 @@ do
 
         if [[ $node_name = *"kibana"* ]]; then
             #It's a Kibana node
+            echo "CID=$(docker run -d --restart always --privileged --dns 8.8.8.8 -p $kibana_host_port:$kibana_host_port  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$kibana_ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/kibana/config -i -t $repo:$kibana_image-$version)"
             CID=$(docker run -d --restart always --privileged --dns 8.8.8.8 -p $kibana_host_port:$kibana_host_port  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$kibana_ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/kibana/config -i -t $repo:$kibana_image-$version)
             server_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $node_name)	
             echo "$server_ip   $node_name"
