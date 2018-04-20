@@ -9,6 +9,7 @@ rm -rf /home/elastic/.ssh/known_hosts
 # but Kibana instances must have "kibana" in the folder name
 
 repo="elasticcertification/repo"
+username="ubuntu"
 
 for dir in */  
 do
@@ -28,8 +29,7 @@ do
     
     while IFS='=' read -r key value
     do
-    	if [ ! -z "$key" ]; then
-    		eval ${key}=\${value}
+   		eval ${key}=\${value}
     done < "$props"
     
     #Iterate through each subfolder and start up each node in a Docker container
@@ -39,12 +39,12 @@ do
 
         if [[ $node_name = *"kibana"* ]]; then
             #It's a Kibana node
-            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8 -p $kibana_host_port:$kibana_host_port  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$kibana_ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/elastic/kibana/config -i -t $repo:$kibana_image-$version)
+            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8 -p $kibana_host_port:$kibana_host_port  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$kibana_ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/kibana/config -i -t $repo:$kibana_image-$version)
             server_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $node_name)	
             echo "$server_ip   $node_name"
         else
             #It's an ES node
-            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/elastic/elasticsearch/config --mount type=bind,source="$(pwd)"/$node_name/data,target=/home/elastic/elasticsearch/data -i -t $repo:$image-$version)
+            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/elasticsearch/config --mount type=bind,source="$(pwd)"/$node_name/data,target=/home/$username/elasticsearch/data -i -t $repo:$image-$version)
             server_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $node_name)	
             echo "$server_ip   $node_name"
            ((ip++))        
