@@ -44,13 +44,13 @@ do
             echo "$server_ip   $node_name"
         elif [[ $image = *"running"* ]]; then
             #It's a running ES node, so we use a unicast_hosts.txt file
-            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/elasticsearch/config --mount type=bind,source="$(pwd)"/$node_name/config/discovery-file,target=/home/$username/elasticsearch/config/discovery-file  --mount type=bind,source="$(pwd)"/$node_name/data,target=/home/$username/elasticsearch/data -i -t $repo:$image-$version)
+            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/elasticsearch/config --mount type=bind,source="$(pwd)"/$node_name/config/discovery-file,target=/home/$username/elasticsearch/config/discovery-file   -i -t $repo:$image-$version)
             server_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $node_name)	
             echo "$server_ip   $node_name"
            ((ip++))        
         else 
             #It's an ES node
-            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/elasticsearch/config  --mount type=bind,source="$(pwd)"/$node_name/data,target=/home/$username/elasticsearch/data -i -t $repo:$image-$version)
+            CID=$(docker run -d --restart always --privileged --dns 8.8.8.8  --name $node_name -h $node_name --publish-all=true -d  --net=es_bridge --ip 172.18.0.$ip --mount type=bind,source="$(pwd)"/$node_name/config,target=/home/$username/elasticsearch/config -i -t $repo:$image-$version)
             server_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $node_name)	
             echo "$server_ip   $node_name"
            ((ip++))        
